@@ -28,7 +28,7 @@ function setMines(){
 
 function startGame(){
   document.getElementById("mines-count").innerText = minesCount;
-  document.getElementById("flag-button").addEventListener("click", setFlag);
+  document.getElementById("flag-button").addEventListener("click", toggleFlag);
   setMines();
   for(let r = 0; r < rows; r++){
     let row = [];
@@ -43,28 +43,23 @@ function startGame(){
   }
 }
 
-function setFlag(){
-  if(flagEnabled){
-    flagEnabled = false;
-    document.getElementById("flag-button").style.backgroundColor = "lightgray";
-  }
-  else{
-    flagEnabled = true;
-    document.getElementById("flag-button").style.backgroundColor = "darkgray";
-  }
+function toggleFlag(){
+  flagEnabled = !flagEnabled;
+  document.getElementById("flag-button").style.backgroundColor = flagEnabled ? "darkgray" : "lightgray";
 }
 
 function clickTile(){
   if(gameOver || this.classList.contains("tile-clicked")) return;
   let tile = this;
   if(flagEnabled){
-    if (tile.innerText == "") tile.innerText = "🚩";
-    else if (tile.innerText == "🚩") tile.innerText = "";
+    tile.innerText = tile.innerText == "🚩" ? "" : "🚩";
     return;
   }
   if(minesLocation.includes(tile.id)){
     //alert("You lose!");
     gameOver = true;
+    document.getElementById("mines-count").innerText = "BOOMBED!";
+    document.getElementById("mines-count").style.color = "red";
     revealMines();
     return;
   }
@@ -118,7 +113,9 @@ function checkMine(r, c){
     checkMine(r+1, c+1);
   }
   if(tilesClicked == rows * cols - minesCount){
-    document.getElementById("mines-count").innerText = "Cleared";
+    document.getElementById("mines-count").innerText = "CLEARED!";
+    document.getElementById("mines-count").style.color = "green";
+    revealMines();
     gameOver = true;
   }
 }
